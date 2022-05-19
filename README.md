@@ -31,3 +31,6 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 ```
 192.168.168.168 papyrus.me.ca
 ```
+
+## About Papyrus
+Take a look at [Papyrus](https://github.com/yorkulibraries/papyrus) repo for Papyrus code.
