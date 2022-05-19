@@ -32,5 +32,14 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 192.168.168.168 papyrus.me.ca
 ```
 
+## Provisioning Papyrus on a remote server/VM
+
+You can deploy Papyrus on a remote server or VM using the papyrus_provision.yml playbook similar to the command below:
+
+```
+ansible-playbook -i inventory papyrus_provision.yml --limit target_host
+```
+
+
 ## About Papyrus
 Take a look at [Papyrus](https://github.com/yorkulibraries/papyrus) repo for Papyrus code.
