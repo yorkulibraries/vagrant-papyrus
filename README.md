@@ -6,9 +6,17 @@ Setup a Papyrus instance quickly with Vagrant and Ansible. The Ansible playbooks
 ```
 git clone https://github.com/yorkulibraries/vagrant-papyrus.git
 cd vagrant-papyrus
+```
+
+Edit vars/main.yml and set the app_domain variable to your domain eg: me.ca
+Edit other variables in the vars folder to match your environment.
+
+Clone the ansible-rails project and bring up the vagrant instance.
+```
 git clone https://github.com/yorkulibraries/ansible-rails.git
 vagrant up
 ```
+
 Watch for any error/failed tasks. If all is good then the instance is ready to use for testing.
 
 Apache auth_basic is used for Basic Authentication. The default administrator username/password is:
@@ -17,8 +25,8 @@ Apache auth_basic is used for Basic Authentication. The default administrator us
 admin/papyrus
 ```
 
-Edit /etc/hosts and add an entry like followed so you can access the app from a browser at http://papyrus.library.yorku.ca/
+Edit /etc/hosts and add an entry like followed so you can access the app from a browser at http://papyrus.me.ca/
 
 ```
-192.168.168.168 papyrus.library.yorku.ca
+192.168.168.168 papyrus.me.ca
 ```
