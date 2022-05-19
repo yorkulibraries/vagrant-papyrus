@@ -1,11 +1,9 @@
----
+- name: papyrus provision
+  hosts: all
+  tasks: 
+    - include_vars: vars/app.yml
+
 - import_playbook: setup_postfix.yml
 - import_playbook: ansible-rails/add_rails_app.yml 
-  vars:
-    app: papyrus
-    puma_port: 3001
-    ruby_version: 2.6.9
 - import_playbook: install_papyrus.yml 
-  vars:
-    app: papyrus
 

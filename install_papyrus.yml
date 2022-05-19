@@ -69,7 +69,7 @@
         src: templates/secrets.yml
         dest: "/home/{{ app }}/{{ app }}/config/secrets.yml"
       when: not app_secrets_yml.stat.exists
-      notify: restart papyrus
+      notify: start papyrus
 
     become: yes
     become_user: "{{ app }}"
@@ -90,7 +90,7 @@
 
   - name: add Basic Auth to apache config
     blockinfile:
-      path: "/etc/apache2/sites-available/{{ app }}.library.yorku.ca.conf"
+      path: "/etc/apache2/sites-available/{{ app }}.{{ app_domain }}.conf"
       insertbefore: "</VirtualHost>"
       block: "{{ lookup('file', 'templates/apache_auth_basic') }}"
     notify: restart apache2
@@ -114,8 +114,17 @@
     systemd:
       state: restarted
       name: apache2
+      enabled: yes
 
   - name: restart papyrus
     systemd:
       state: restarted
       name: papyrus
+      enabled: yes
+
+  - name: start papyrus
+    systemd:
+      state: started
+      name: papyrus
+      enabled: yes
+

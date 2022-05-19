@@ -8,7 +8,7 @@ git clone https://github.com/yorkulibraries/vagrant-papyrus.git
 cd vagrant-papyrus
 ```
 
-Edit vars/main.yml and set the app_domain variable to your domain eg: me.ca
+Edit vars/app.yml and set the app_domain variable to your domain eg: me.ca
 
 Edit other variables in the vars folder to match your environment.
 
