@@ -1,0 +1,121 @@
+---
+- name: Install papyrus app
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - vars/mysql.yml
+  roles:
+    - { role: geerlingguy.mysql }
+
+  tasks:
+
+  - block:
+
+    - name: stat "/home/{{ app }}/{{ app }}/config/secrets.yml" 
+      stat:
+        path: "/home/{{ app }}/{{ app }}/config/secrets.yml"
+      register: app_secrets_yml
+
+    - name: git clone app from git repo
+      git:
+        repo: https://github.com/yorkulibraries/papyrus.git
+        dest: /home/{{ app }}/{{ app }}
+        single_branch: yes
+        version: master
+      when: not app_secrets_yml.stat.exists
+
+    - name: install bundler-2.3.8
+      shell: /home/{{ app }}/.rbenv/shims/gem install bundler -v2.3.8
+      register: gem_install_bundler
+      changed_when: gem_install_bundler.stdout is search('Fetching')
+
+    - name: run bundle install
+      shell: /home/{{ app }}/.rbenv/shims/bundle install
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: bundle_install
+      changed_when: bundle_install.stdout is search('Installing')
+      failed_when: bundle_install.stdout is search('Could not')
+
+    - name: create database.yml
+      template:
+        src: templates/database.yml
+        dest: "/home/{{ app }}/{{ app }}/config/database.yml"
+
+    - name: rake db:schema:load
+      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake db:schema:load
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: rake_db_schema_load
+      when: not app_secrets_yml.stat.exists
+
+    - name: rake db:seed
+      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake db:seed
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: rake_db_seed
+      when: not app_secrets_yml.stat.exists
+
+    - name: rake secret
+      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake secret
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: rake_secret
+      when: not app_secrets_yml.stat.exists
+
+    - name: create secrets.yml
+      template:
+        src: templates/secrets.yml
+        dest: "/home/{{ app }}/{{ app }}/config/secrets.yml"
+      when: not app_secrets_yml.stat.exists
+      notify: restart papyrus
+
+    become: yes
+    become_user: "{{ app }}"
+
+  - name: Enable the Apache2 mod_rewrite
+    community.general.apache2_module:
+      state: present
+      name: rewrite
+      ignore_configcheck: yes
+    notify: restart apache2
+
+  - name: Enable the Apache2 mod_headers
+    community.general.apache2_module:
+      state: present
+      name: headers
+      ignore_configcheck: yes
+    notify: restart apache2
+
+  - name: add Basic Auth to apache config
+    blockinfile:
+      path: "/etc/apache2/sites-available/{{ app }}.library.yorku.ca.conf"
+      insertbefore: "</VirtualHost>"
+      block: "{{ lookup('file', 'templates/apache_auth_basic') }}"
+    notify: restart apache2
+
+  - name: install python3-passlib
+    apt:
+      pkg: 
+      - python3-passlib
+
+  - name: Add a user to a password file and ensure permissions are set
+    community.general.htpasswd:
+      path: /etc/apache2/papyrus-htpasswd
+      name: admin
+      password: 'papyrus' 
+      owner: root
+      group: www-data
+      mode: 0640
+
+  handlers:
+  - name: restart apache2
+    systemd:
+      state: restarted
+      name: apache2
+
+  - name: restart papyrus
+    systemd:
+      state: restarted
+      name: papyrus
