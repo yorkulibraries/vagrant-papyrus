@@ -9,6 +9,7 @@ cd vagrant-papyrus
 ```
 
 Edit vars/main.yml and set the app_domain variable to your domain eg: me.ca
+
 Edit other variables in the vars folder to match your environment.
 
 Clone the ansible-rails project and bring up the vagrant instance.
