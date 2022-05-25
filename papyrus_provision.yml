@@ -1,7 +1,14 @@
 - name: papyrus provision
   hosts: all
+  become: yes
   tasks: 
     - include_vars: vars/app.yml
+    - name: set RAILS_ENV in /home/{{ app }}/.profile
+      lineinfile:
+        dest: /home/{{ app }}/.profile
+        regex: '^export RAILS_ENV='
+        line: "export RAILS_ENV={{ rails_env }}"
+        state: present
 
 - import_playbook: setup_postfix.yml
 - import_playbook: ansible-rails/add_rails_app.yml 
