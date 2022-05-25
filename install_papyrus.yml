@@ -100,7 +100,7 @@
       pkg: 
       - python3-passlib
 
-  - name: Add a user to a password file and ensure permissions are set
+  - name: Add a default admin user to /etc/apache2/papyrus-htpasswd
     community.general.htpasswd:
       path: /etc/apache2/papyrus-htpasswd
       name: admin
@@ -108,6 +108,33 @@
       owner: root
       group: www-data
       mode: 0640
+
+  - name: Add a default coordinator user to /etc/apache2/papyrus-htpasswd
+    community.general.htpasswd:
+      path: /etc/apache2/papyrus-htpasswd
+      name: coordinator
+      password: 'papyrus'
+      owner: root
+      group: www-data
+      mode: 0640
+
+  - name: Add a default student user to /etc/apache2/papyrus-htpasswd
+    community.general.htpasswd:
+      path: /etc/apache2/papyrus-htpasswd
+      name: student
+      password: 'papyrus'
+      owner: root
+      group: www-data
+      mode: 0640
+
+
+  - name: set RAILS_ENV in /home/{{ app }}/.profile
+    lineinfile:
+      dest: /home/{{ app }}/.profile
+      regex: '^export RAILS_ENV='
+      line: "export RAILS_ENV={{ rails_env }}"
+      state: present
+
 
   handlers:
   - name: restart apache2
