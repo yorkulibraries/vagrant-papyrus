@@ -20,10 +20,12 @@ vagrant up
 
 Watch for any error/failed tasks. If all is good then the instance is ready to use for testing.
 
-Apache auth_basic is used for Basic Authentication. The default administrator username/password is:
+Apache auth_basic is used for Basic Authentication. The default users for the 3 roles: Admin, Coordinator, and Student are:
 
 ```
 admin/papyrus
+coordinator/papyrus
+student/papyrus
 ```
 
 Edit /etc/hosts and add an entry like followed so you can access the app from a browser at http://papyrus.me.ca/
