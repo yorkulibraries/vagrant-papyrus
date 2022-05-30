@@ -44,21 +44,21 @@
         dest: "/home/{{ app }}/{{ app }}/config/database.yml"
 
     - name: rake db:schema:load
-      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake db:schema:load
+      shell: RAILS_ENV={{ rails_env }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:schema:load
       args:
         chdir: /home/{{ app }}/{{ app }}
       register: rake_db_schema_load
       when: not app_secrets_yml.stat.exists
 
     - name: rake db:seed
-      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake db:seed
+      shell: RAILS_ENV={{ rails_env }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:seed
       args:
         chdir: /home/{{ app }}/{{ app }}
       register: rake_db_seed
       when: not app_secrets_yml.stat.exists
 
     - name: rake secret
-      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake secret
+      shell: RAILS_ENV={{ rails_env }} /home/{{ app }}/.rbenv/shims/bundle exec rake secret
       args:
         chdir: /home/{{ app }}/{{ app }}
       register: rake_secret
