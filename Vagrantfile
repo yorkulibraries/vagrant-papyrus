@@ -1,3 +1,5 @@
+rails_env = ENV['RAILS_ENV'] || 'development'
+
 Vagrant.configure("2") do |config|
   config.vm.hostname = "vagrant"
   config.vm.box = "bento/ubuntu-20.04"
@@ -10,5 +12,8 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: "192.168.168.168"
   config.vm.provision "ansible" do |ansible| 
     ansible.playbook="vagrant_provision.yml" 
+    ansible.extra_vars = {
+      rails_env: rails_env
+    } 
   end 
 end
