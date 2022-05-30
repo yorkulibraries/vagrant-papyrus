@@ -3,18 +3,30 @@ Setup a Papyrus instance quickly with Vagrant and Ansible. The Ansible playbooks
 
 ## Getting started
 
+The following steps to provision a *development* instance of Papyrus.  
+
+Clone this repo:
 ```
 git clone https://github.com/yorkulibraries/vagrant-papyrus.git
+```
+
+Change into the vagrant-papyrus directory:
+```
 cd vagrant-papyrus
 ```
 
-Edit vars/app.yml and set the app_domain variable to your domain eg: me.ca
-
-Edit other variables in the vars folder to match your environment.
-
-Clone the ansible-rails project and bring up the vagrant instance.
+Clone the ansible-rails project:
 ```
 git clone https://github.com/yorkulibraries/ansible-rails.git
+```
+
+Clone the Papyrus project for development: (**NOTE:** we use SSH here to clone the Papyrus project because we want to be able to make changes.)
+```
+git clone git@github.com:yorkulibraries/papyrus.git
+```
+
+Bring up the box:
+```
 vagrant up
 ```
 
@@ -33,6 +45,12 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 ```
 192.168.168.168 papyrus.me.ca
 ```
+
+## Making changes
+
+The directory **/home/papyrus/papyrus** in the box is a *symlink* to **/vagrant/papyrus**, which is a synced folder in the your local machine's **vagrant-papyrus** folder.
+You can make changes on your local machine in **vagrant-papyrus/papyrus** folder and it is changed in the vagrant box too. 
+
 
 ## Provisioning Papyrus on a remote server/VM
 
