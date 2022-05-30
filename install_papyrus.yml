@@ -6,7 +6,8 @@
   vars_files:
     - vars/mysql.yml
   roles:
-    - { role: geerlingguy.mysql }
+    - role: geerlingguy.mysql
+      when: rails_env == 'production'
 
   tasks:
 
@@ -43,22 +44,40 @@
         src: templates/database.yml
         dest: "/home/{{ app }}/{{ app }}/config/database.yml"
 
-    - name: rake db:schema:load
-      shell: RAILS_ENV={{ rails_env }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:schema:load
+    - name: rake db:drop
+      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:drop
       args:
         chdir: /home/{{ app }}/{{ app }}
-      register: rake_db_schema_load
-      when: not app_secrets_yml.stat.exists
+      register: rake_db_drop
+      when: (rails_env == 'development' or rails_env == 'test')
+      notify: restart papyrus
+
+    - name: rake db:create
+      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:create
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: rake_db_create
+      when: (rails_env == 'development' or rails_env == 'test')
+      notify: restart papyrus
+
+    - name: rake db:migrate
+      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:migrate
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: rake_db_migrate
+      when: not app_secrets_yml.stat.exists or (rails_env == 'development' or rails_env == 'test')
+      notify: restart papyrus
 
     - name: rake db:seed
-      shell: RAILS_ENV={{ rails_env }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:seed
+      shell: RAILS_ENV={{ rails_env  | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:seed
       args:
         chdir: /home/{{ app }}/{{ app }}
       register: rake_db_seed
-      when: not app_secrets_yml.stat.exists
+      when: not app_secrets_yml.stat.exists or (rails_env == 'development' or rails_env == 'test')
+      notify: restart papyrus
 
     - name: rake secret
-      shell: RAILS_ENV={{ rails_env }} /home/{{ app }}/.rbenv/shims/bundle exec rake secret
+      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake secret
       args:
         chdir: /home/{{ app }}/{{ app }}
       register: rake_secret
@@ -132,7 +151,7 @@
     lineinfile:
       dest: /home/{{ app }}/.profile
       regex: '^export RAILS_ENV='
-      line: "export RAILS_ENV={{ rails_env }}"
+      line: "export RAILS_ENV={{ rails_env | default('development') }}"
       state: present
 
 
