@@ -51,6 +51,15 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 The directory **/home/papyrus/papyrus** in the box is a *symlink* to **/vagrant/papyrus**, which is a synced folder in the your local machine's **vagrant-papyrus** folder.
 You can make changes on your local machine in **vagrant-papyrus/papyrus** folder and it is changed in the vagrant box too. 
 
+## Running tests
+
+SSH into the box as user **papyrus**
+```
+ssh papyrus@127.0.0.1 -p2222
+cd papyrus
+RAILS_ENV=test bundle exec rake db:reset
+RAILS_ENV=test bundle exec rake test
+```
 
 ## Provisioning Papyrus on a remote server/VM
 
