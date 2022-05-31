@@ -11,6 +11,12 @@
 
   tasks:
 
+  - name: Adding user {{ app }} to group vagrant
+    user: name={{ app }}
+      groups=vagrant
+      append=yes
+    when: not rails_env == 'production'
+
   - block:
 
     - name: stat "/home/{{ app }}/{{ app }}/config/secrets.yml" 
@@ -24,20 +30,36 @@
         dest: /home/{{ app }}/{{ app }}
         single_branch: yes
         version: master
-      when: not app_secrets_yml.stat.exists
+      when: rails_env == 'production' and not app_secrets_yml.stat.exists
+
+    - name: symlink /vagrant/papyrus to /home/{{ app }}/{{ app }}
+      file:
+        src: /vagrant/papyrus
+        dest:  /home/{{ app }}/{{ app }}
+        state: link
 
     - name: install bundler-2.3.8
       shell: /home/{{ app }}/.rbenv/shims/gem install bundler -v2.3.8
       register: gem_install_bundler
       changed_when: gem_install_bundler.stdout is search('Fetching')
 
-    - name: run bundle install
-      shell: /home/{{ app }}/.rbenv/shims/bundle install
+    - name: run bundle install --without development test
+      shell: /home/{{ app }}/.rbenv/shims/bundle install --without development test
       args:
         chdir: /home/{{ app }}/{{ app }}
       register: bundle_install
       changed_when: bundle_install.stdout is search('Installing')
       failed_when: bundle_install.stdout is search('Could not')
+      when: rails_env == 'production'
+
+    - name: run bundle install --with development test
+      shell: /home/{{ app }}/.rbenv/shims/bundle install --with development test
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: bundle_install
+      changed_when: bundle_install.stdout is search('Installing')
+      failed_when: bundle_install.stdout is search('Could not')
+      when: rails_env == 'development'
 
     - name: create database.yml
       template:

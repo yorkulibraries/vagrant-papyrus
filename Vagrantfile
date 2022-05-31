@@ -16,4 +16,6 @@ Vagrant.configure("2") do |config|
       rails_env: rails_env
     } 
   end 
+
+  config.vm.synced_folder "papyrus", "/vagrant/papyrus", mount_options: ["dmode=775,fmode=664"]
 end
