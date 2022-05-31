@@ -37,12 +37,14 @@
         name: safe.directory
         scope: global
         value: /vagrant/papyrus
+      when: rails_env != 'production' and not app_secrets_yml.stat.exists
 
     - name: symlink /vagrant/papyrus to /home/{{ app }}/{{ app }}
       file:
         src: /vagrant/papyrus
         dest:  /home/{{ app }}/{{ app }}
         state: link
+      when: rails_env != 'production' and not app_secrets_yml.stat.exists
 
     - name: install bundler-2.3.8
       shell: /home/{{ app }}/.rbenv/shims/gem install bundler -v2.3.8
