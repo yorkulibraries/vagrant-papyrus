@@ -46,6 +46,22 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 192.168.168.168 papyrus.me.ca
 ```
 
+## Set search API keys
+
+You can create a file with the search API keys (see vars/api_keys.yml for example), then run the following to set them in the Papyrus database.
+
+If the file is encrypted, you will need to specify the password. For example, at YUL you will run the following:
+
+```
+ansible-playbook set_api_keys.yml -e"app=papyrus rails_env=development apikeys=vars/yul_keys.yml" --ask-vault-pass
+```
+
+If the file is **not** encrypted and your API keys file is var/my_keys.yml, you will run the following:
+
+```
+ansible-playbook set_api_keys.yml -e"app=papyrus rails_env=development apikeys=vars/my_keys.yml"
+```
+
 ## Making changes
 
 The directory **/home/papyrus/papyrus** in the box is a *symlink* to **/vagrant/papyrus**, which is a synced folder in the your local machine's **vagrant-papyrus** folder.
