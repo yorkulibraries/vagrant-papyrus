@@ -25,9 +25,16 @@ Clone the Papyrus project for development: (**NOTE:** we use SSH here to clone t
 git clone git@github.com:yorkulibraries/papyrus.git
 ```
 
-Bring up the box:
+Bring up the box with RAILS_ENV=development (this is the default):
+
 ```
 vagrant up
+```
+
+If you want to bring the box up with RAILS_ENV=production, then specify the environment variable as when you run vagrant up:
+
+```
+RAILS_ENV=production vagrant up
 ```
 
 Watch for any error/failed tasks. If all is good then the instance is ready to use for testing.
@@ -64,10 +71,16 @@ ansible-playbook set_api_keys.yml -e"app=papyrus rails_env=development apikeys=v
 
 ## Making changes
 
+**NOTE: Assuming you have provisioned the box with the default RAILS_ENV=development.**
+
+Assuming you have provisioned the box with the default RAILS_ENV=development.
+
 The directory **/home/papyrus/papyrus** in the box is a *symlink* to **/vagrant/papyrus**, which is a synced folder in the your local machine's **vagrant-papyrus** folder.
 You can make changes on your local machine in **vagrant-papyrus/papyrus** folder and it is changed in the vagrant box too. 
 
 ## Running tests
+
+**NOTE: Assuming you have provisioned the box with the default RAILS_ENV=development.**
 
 SSH into the box as user **papyrus**
 ```
