@@ -32,6 +32,12 @@
         version: master
       when: rails_env == 'production' and not app_secrets_yml.stat.exists
 
+    - name: configure /vagrant/papyrus as safe for git
+      git_config:
+        name: safe.directory
+        scope: global
+        value: /vagrant/papyrus
+
     - name: symlink /vagrant/papyrus to /home/{{ app }}/{{ app }}
       file:
         src: /vagrant/papyrus
