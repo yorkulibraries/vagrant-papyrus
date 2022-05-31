@@ -17,6 +17,11 @@
         chdir: /home/{{ app }}/{{ app }}
       register: rake_app_set_api_keys
 
+    - name: create /home/{{ app }}/{{ app }}/config/api_keys.yml
+      template:
+        src: templates/api_keys.yml
+        dest: "/home/{{ app }}/{{ app }}/config/api_keys.yml"
+
 
     become: yes
     become_user: "{{ app }}"
