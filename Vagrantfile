@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "vagrant-papyrus"
   config.vm.provider "virtualbox" do |vb|
     # Customize the amount of memory on the VM:
-    vb.memory = "1024"
+    vb.memory = "2048"
     vb.name = "vagrant-papyrus"
   end
   config.vm.network :private_network, ip: "192.168.168.168"
@@ -17,6 +17,9 @@ Vagrant.configure("2") do |config|
     } 
   end 
 
-  config.vm.synced_folder "papyrus", "/vagrant/papyrus", mount_options: ["dmode=775,fmode=664"]
-  config.vm.synced_folder "papyrus/bin", "/vagrant/papyrus/bin", mount_options: ["dmode=775,fmode=775"]
+  if rails_env == 'development'
+    config.vm.synced_folder "papyrus", "/vagrant/papyrus", mount_options: ["dmode=775,fmode=664"]
+    config.vm.synced_folder "papyrus/bin", "/vagrant/papyrus/bin", mount_options: ["dmode=775,fmode=775"]
+  end
+
 end
