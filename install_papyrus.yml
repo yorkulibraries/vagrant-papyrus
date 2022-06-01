@@ -106,11 +106,25 @@
       when: not app_secrets_yml.stat.exists or (rails_env == 'development' or rails_env == 'test')
       notify: restart papyrus
 
-    - name: rake secret
-      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake secret
+    - name: RAILS_ENV=development rake secret 
+      shell: RAILS_ENV=development /home/{{ app }}/.rbenv/shims/bundle exec rake secret
       args:
         chdir: /home/{{ app }}/{{ app }}
-      register: rake_secret
+      register: rake_secret_development
+      when: not app_secrets_yml.stat.exists
+
+    - name: RAILS_ENV=production rake secret
+      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake secret
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: rake_secret_production
+      when: not app_secrets_yml.stat.exists
+
+    - name: RAILS_ENV=test rake secret
+      shell: RAILS_ENV=test /home/{{ app }}/.rbenv/shims/bundle exec rake secret
+      args:
+        chdir: /home/{{ app }}/{{ app }}
+      register: rake_secret_test
       when: not app_secrets_yml.stat.exists
 
     - name: create secrets.yml
