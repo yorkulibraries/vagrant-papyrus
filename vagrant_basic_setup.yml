@@ -11,10 +11,6 @@
 
   tasks:
 
-    - name: Upgrade the OS (apt-get dist-upgrade)
-      apt:
-        upgrade: dist
-
     - name: install a bunch of basic util packages 
       apt:
         pkg:
