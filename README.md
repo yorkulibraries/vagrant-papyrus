@@ -97,9 +97,10 @@ RAILS_ENV=test bundle exec rake test
 You can deploy Papyrus on a remote server or VM using the papyrus_provision.yml playbook similar to the command below:
 
 ```
-ansible-playbook -i inventory papyrus_provision.yml --limit target_host
+ansible-playbook -i inventory papyrus_provision.yml -e"rails_env=production" --limit target_host 
 ```
 
+**Don't forget to set the search API keys as explained above.**
 
 ## About Papyrus
 Take a look at [Papyrus](https://github.com/yorkulibraries/papyrus) repo for Papyrus code.
