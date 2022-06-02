@@ -55,11 +55,13 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 
 ## Set search API keys
 
-You can create a file with the search API keys (see vars/api_keys.yml for example), then run the following to set them in the Papyrus database.
+Papyrus can search Worldcat and Alma/PrimoVE for bibliographic records. To make this work, you will need API keys for each of these services.
+
+You can create a file with the search API keys (see vars/api_keys.yml for example), then run the playbook set_api_keys.yml to set them in the Papyrus database.
 
 Note you must specify the rails_env variable to be the same as the one you have provisioned the box with.
 
-If the file is encrypted, you will need to specify the password. For example, at YUL you will run the following:
+If the file is encrypted, you will need to specify the Ansible Vault password. For example, at YUL, the file vars/yul_keys.yml is encrypted, you will run the following:
 
 ```
 ansible-playbook set_api_keys.yml -e"app=papyrus rails_env=development apikeys=vars/yul_keys.yml" --ask-vault-pass
@@ -75,12 +77,10 @@ ansible-playbook set_api_keys.yml -e"app=papyrus rails_env=development apikeys=v
 
 **NOTE: Assuming you have provisioned the box with the default RAILS_ENV=development.**
 
-Assuming you have provisioned the box with the default RAILS_ENV=development.
-
 The directory **/home/papyrus/papyrus** in the box is a *symlink* to **/vagrant/papyrus**, which is a synced folder in the your local machine's **vagrant-papyrus** folder.
 You can make changes on your local machine in **vagrant-papyrus/papyrus** folder and it is changed in the vagrant box too. 
 
-## Running tests
+## Running unit tests
 
 **NOTE: Assuming you have provisioned the box with the default RAILS_ENV=development.**
 
