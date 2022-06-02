@@ -45,6 +45,7 @@ Apache auth_basic is used for Basic Authentication. The default users for the 3 
 admin/papyrus
 coordinator/papyrus
 student/papyrus
+apiuser/papyrus
 ```
 
 Edit /etc/hosts and add an entry like followed so you can access the app from a browser at http://papyrus.me.ca/
