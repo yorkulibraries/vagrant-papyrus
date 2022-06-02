@@ -77,12 +77,10 @@ ansible-playbook set_api_keys.yml -e"app=papyrus rails_env=development apikeys=v
 
 **NOTE: Assuming you have provisioned the box with the default RAILS_ENV=development.**
 
-Assuming you have provisioned the box with the default RAILS_ENV=development.
-
 The directory **/home/papyrus/papyrus** in the box is a *symlink* to **/vagrant/papyrus**, which is a synced folder in the your local machine's **vagrant-papyrus** folder.
 You can make changes on your local machine in **vagrant-papyrus/papyrus** folder and it is changed in the vagrant box too. 
 
-## Running tests
+## Running unit tests
 
 **NOTE: Assuming you have provisioned the box with the default RAILS_ENV=development.**
 
