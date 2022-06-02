@@ -31,7 +31,7 @@ Bring up the box with RAILS_ENV=development (this is the default):
 vagrant up
 ```
 
-If you want to bring the box up with RAILS_ENV=production, then specify the environment variable as when you run vagrant up:
+If you want to bring the box up with RAILS_ENV=production, then specify the environment variable when you run vagrant up:
 
 ```
 RAILS_ENV=production vagrant up
