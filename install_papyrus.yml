@@ -158,6 +158,13 @@
       block: "{{ lookup('file', 'templates/apache_auth_basic') }}"
     notify: restart apache2
 
+  - name: add Basic Auth to apache config ssl
+    blockinfile:
+      path: "/etc/apache2/sites-available/{{ app }}.{{ app_domain }}-ssl.conf"
+      insertbefore: "</VirtualHost>"
+      block: "{{ lookup('file', 'templates/apache_auth_basic') }}"
+    notify: restart apache2
+
   - name: install python3-passlib
     apt:
       pkg: 
@@ -190,6 +197,14 @@
       group: www-data
       mode: 0640
 
+  - name: Add an API user to /etc/apache2/papyrus-htpasswd
+    community.general.htpasswd:
+      path: /etc/apache2/papyrus-htpasswd
+      name: apiuser
+      password: 'papyrus'
+      owner: root
+      group: www-data
+      mode: 0640
 
   - name: set RAILS_ENV in /home/{{ app }}/.profile
     lineinfile:
