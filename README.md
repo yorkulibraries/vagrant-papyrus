@@ -55,6 +55,8 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 
 ## Set search API keys
 
+Papyrus can search Worldcat and Alma/PrimoVE for bibliographic records. To make this work, you will need API keys for each of these services.
+
 You can create a file with the search API keys (see vars/api_keys.yml for example), then run the following to set them in the Papyrus database.
 
 Note you must specify the rails_env variable to be the same as the one you have provisioned the box with.
