@@ -57,11 +57,11 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 
 Papyrus can search Worldcat and Alma/PrimoVE for bibliographic records. To make this work, you will need API keys for each of these services.
 
-You can create a file with the search API keys (see vars/api_keys.yml for example), then run the following to set them in the Papyrus database.
+You can create a file with the search API keys (see vars/api_keys.yml for example), then run the playbook set_api_keys.yml to set them in the Papyrus database.
 
 Note you must specify the rails_env variable to be the same as the one you have provisioned the box with.
 
-If the file is encrypted, you will need to specify the password. For example, at YUL you will run the following:
+If the file is encrypted, you will need to specify the Ansible Vault password. For example, at YUL, the file vars/yul_keys.yml is encrypted, you will run the following:
 
 ```
 ansible-playbook set_api_keys.yml -e"app=papyrus rails_env=development apikeys=vars/yul_keys.yml" --ask-vault-pass
