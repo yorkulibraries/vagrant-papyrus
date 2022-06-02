@@ -213,6 +213,12 @@
       line: "export RAILS_ENV={{ rails_env | default('development') }}"
       state: present
 
+  - name: enable papyrus service on boot
+    systemd:
+      name: papyrus
+      enabled: yes
+      masked: no
+
 
   handlers:
   - name: restart apache2

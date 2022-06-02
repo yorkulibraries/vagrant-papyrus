@@ -16,6 +16,7 @@
       args:
         chdir: /home/{{ app }}/{{ app }}
       register: rake_app_set_api_keys
+      notify: restart papyrus
 
     - name: create /home/{{ app }}/{{ app }}/config/api_keys.yml
       template:
@@ -27,3 +28,9 @@
     become_user: "{{ app }}"
 
 
+  handlers:
+  - name: restart papyrus
+    systemd:
+      state: restarted
+      name: papyrus
+      enabled: yes
