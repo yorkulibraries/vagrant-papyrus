@@ -1,4 +1,4 @@
-Setup a Papyrus instance quickly with Vagrant and Ansible. The Ansible playbooks can also be used to deploy to a real production server in a similar fashion.
+Setup a [Papyrus](https://github.com/yorkulibraries/papyrus) instance quickly with Vagrant and Ansible. The Ansible playbooks can also be used to deploy to a real production server in a similar fashion.
 
 
 ## Getting started
