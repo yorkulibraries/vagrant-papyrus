@@ -2,3 +2,4 @@
 roles/external
 ansible-rails
 papyrus
+inventory
