@@ -107,7 +107,7 @@ papyrus    ansible_host=192.168.168.168
 papyrus
 ```
 
-You can deploy Papyrus on a remote server or VM using the papyrus_provision.yml playbook similar to the command below:
+Install Mysql and Papyrus on the target server
 
 ```
 ansible-playbook -i inventory papyrus_provision.yml -e"rails_env=production app_domain=yourdomain.ca mysql_root_password=mysql_root_password" --limit papyrus 
