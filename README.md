@@ -95,6 +95,10 @@ RAILS_ENV=test bundle exec rake test
 
 ## Provisioning Papyrus on a remote server/VM
 
+Assuming you have a remote server dedicated for running Papyrus. And suppose there is a DNS record for the server such as **papyrus.yourdomain.ca**.
+
+The following steps will install/configure MYSQL and Papyrus on that server.
+
 Create an **inventory** file with the name/IP address of the remote server, similar to the one below:
 ```
 papyrus    ansible_host=192.168.168.168
@@ -106,7 +110,7 @@ papyrus
 You can deploy Papyrus on a remote server or VM using the papyrus_provision.yml playbook similar to the command below:
 
 ```
-ansible-playbook -i inventory papyrus_provision.yml -e"rails_env=production" --limit target_host 
+ansible-playbook -i inventory papyrus_provision.yml -e"rails_env=production app_domain=yourdomain.ca mysql_root_password=mysql_root_password" --limit papyrus 
 ```
 
 **Don't forget to set the search API keys as explained above.**
