@@ -95,6 +95,14 @@ RAILS_ENV=test bundle exec rake test
 
 ## Provisioning Papyrus on a remote server/VM
 
+Create an **inventory** file with the name/IP address of the remote server, similar to the one below:
+```
+papyrus    ansible_host=192.168.168.168
+
+[rails_app_servers]
+papyrus
+```
+
 You can deploy Papyrus on a remote server or VM using the papyrus_provision.yml playbook similar to the command below:
 
 ```
