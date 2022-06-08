@@ -15,7 +15,7 @@ Change into the vagrant-papyrus directory:
 cd vagrant-papyrus
 ```
 
-Clone the ansible-rails project:
+Clone the [ansible-rails](https://github.com/yorkulibraries/ansible-rails) project:
 ```
 git clone https://github.com/yorkulibraries/ansible-rails.git
 ```
