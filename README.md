@@ -25,6 +25,12 @@ Clone the Papyrus project for development: (**NOTE:** we use SSH here to clone t
 git clone git@github.com:yorkulibraries/papyrus.git
 ```
 
+Install the Ansible dependencies.
+
+```
+ansible-galaxy install -r requirements.yml
+```
+
 Bring up the box with RAILS_ENV=development (this is the default):
 
 ```
