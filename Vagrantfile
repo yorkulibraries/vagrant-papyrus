@@ -13,7 +13,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible| 
     ansible.playbook="vagrant_provision.yml" 
     ansible.extra_vars = {
-      rails_env: rails_env
+      rails_env: rails_env,
+      mysql_host: "localhost"
     } 
   end 
 

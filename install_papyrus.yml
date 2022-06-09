@@ -3,11 +3,6 @@
   hosts: all
   become: yes
   gather_facts: yes
-  vars_files:
-    - vars/mysql.yml
-  roles:
-    - role: geerlingguy.mysql
-      when: rails_env == 'production'
 
   tasks:
 
@@ -24,14 +19,6 @@
         path: "/home/{{ app }}/{{ app }}/config/secrets.yml"
       register: app_secrets_yml
 
-    - name: git clone app from git repo
-      git:
-        repo: https://github.com/yorkulibraries/papyrus.git
-        dest: /home/{{ app }}/{{ app }}
-        single_branch: yes
-        version: master
-      when: rails_env == 'production' and not app_secrets_yml.stat.exists
-
     - name: configure /vagrant/papyrus as safe for git
       git_config:
         name: safe.directory
@@ -46,110 +33,8 @@
         state: link
       when: rails_env != 'production' and not app_secrets_yml.stat.exists
 
-    - name: install bundler-2.3.8
-      shell: /home/{{ app }}/.rbenv/shims/gem install bundler -v2.3.8
-      register: gem_install_bundler
-      changed_when: gem_install_bundler.stdout is search('Fetching')
-
-    - name: run bundle install --without development test
-      shell: /home/{{ app }}/.rbenv/shims/bundle install --without development test
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: bundle_install
-      changed_when: bundle_install.stdout is search('Installing')
-      failed_when: bundle_install.stdout is search('Could not')
-      when: rails_env == 'production'
-
-    - name: run bundle install --with development test
-      shell: /home/{{ app }}/.rbenv/shims/bundle install --with development test
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: bundle_install
-      changed_when: bundle_install.stdout is search('Installing')
-      failed_when: bundle_install.stdout is search('Could not')
-      when: rails_env == 'development'
-
-    - name: create database.yml
-      template:
-        src: templates/database.yml
-        dest: "/home/{{ app }}/{{ app }}/config/database.yml"
-
-    - name: rake db:drop
-      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:drop
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: rake_db_drop
-      when: (rails_env == 'development' or rails_env == 'test')
-      notify: restart papyrus
-
-    - name: rake db:create
-      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:create
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: rake_db_create
-      when: (rails_env == 'development' or rails_env == 'test')
-      notify: restart papyrus
-
-    - name: rake db:migrate
-      shell: RAILS_ENV={{ rails_env | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:migrate
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: rake_db_migrate
-      when: not app_secrets_yml.stat.exists or (rails_env == 'development' or rails_env == 'test')
-      notify: restart papyrus
-
-    - name: rake db:seed
-      shell: RAILS_ENV={{ rails_env  | default('development') }} /home/{{ app }}/.rbenv/shims/bundle exec rake db:seed
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: rake_db_seed
-      when: not app_secrets_yml.stat.exists or (rails_env == 'development' or rails_env == 'test')
-      notify: restart papyrus
-
-    - name: RAILS_ENV=development rake secret 
-      shell: RAILS_ENV=development /home/{{ app }}/.rbenv/shims/bundle exec rake secret
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: rake_secret_development
-      when: not app_secrets_yml.stat.exists
-
-    - name: RAILS_ENV=production rake secret
-      shell: RAILS_ENV=production /home/{{ app }}/.rbenv/shims/bundle exec rake secret
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: rake_secret_production
-      when: not app_secrets_yml.stat.exists
-
-    - name: RAILS_ENV=test rake secret
-      shell: RAILS_ENV=test /home/{{ app }}/.rbenv/shims/bundle exec rake secret
-      args:
-        chdir: /home/{{ app }}/{{ app }}
-      register: rake_secret_test
-      when: not app_secrets_yml.stat.exists
-
-    - name: create secrets.yml
-      template:
-        src: templates/secrets.yml
-        dest: "/home/{{ app }}/{{ app }}/config/secrets.yml"
-      when: not app_secrets_yml.stat.exists
-      notify: start papyrus
-
     become: yes
     become_user: "{{ app }}"
-
-  - name: Enable the Apache2 mod_rewrite
-    community.general.apache2_module:
-      state: present
-      name: rewrite
-      ignore_configcheck: yes
-    notify: restart apache2
-
-  - name: Enable the Apache2 mod_headers
-    community.general.apache2_module:
-      state: present
-      name: headers
-      ignore_configcheck: yes
-    notify: restart apache2
 
   - name: add Basic Auth to apache config
     blockinfile:
@@ -206,20 +91,6 @@
       group: www-data
       mode: 0640
 
-  - name: set RAILS_ENV in /home/{{ app }}/.profile
-    lineinfile:
-      dest: /home/{{ app }}/.profile
-      regex: '^export RAILS_ENV='
-      line: "export RAILS_ENV={{ rails_env | default('development') }}"
-      state: present
-
-  - name: enable papyrus service on boot
-    systemd:
-      name: papyrus
-      enabled: yes
-      masked: no
-
-
   handlers:
   - name: restart apache2
     systemd:
@@ -227,15 +98,6 @@
       name: apache2
       enabled: yes
 
-  - name: restart papyrus
-    systemd:
-      state: restarted
-      name: papyrus
-      enabled: yes
 
-  - name: start papyrus
-    systemd:
-      state: started
-      name: papyrus
-      enabled: yes
+- import_playbook: ansible-rails/install_rails_app.yml 
 
