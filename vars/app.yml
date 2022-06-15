@@ -1,7 +1,7 @@
 app: papyrus
 app_domain: me.ca
 puma_port: 3001
-ruby_version: 2.6.9
+ruby_version: 2.7.0
 rails_env: development
 repo_branch: master 
 repo: https://github.com/yorkulibraries/papyrus.git
