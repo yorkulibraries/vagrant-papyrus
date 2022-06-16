@@ -18,6 +18,7 @@
         - htop
         - mailutils
         - acl
+        - net-tools
 
     - name: Set the timezone to America/Toronto 
       timezone: "name=America/Toronto"
