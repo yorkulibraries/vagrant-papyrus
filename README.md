@@ -37,11 +37,7 @@ Bring up the box with RAILS_ENV=development (this is the default):
 vagrant up
 ```
 
-If you want to bring the box up with RAILS_ENV=production, then specify the environment variable when you run vagrant up:
 
-```
-RAILS_ENV=production vagrant up
-```
 
 Watch for any error/failed tasks. If all is good then the instance is ready to use for testing.
 
@@ -59,6 +55,11 @@ Edit /etc/hosts and add an entry like followed so you can access the app from a 
 ```
 192.168.168.168 papyrus.me.ca
 ```
+
+## Verifying emails are sent in development
+
+In development environment, mails are "caught" by MailCatcher. You can see all the emails by going to the MailCatcher web interface at http://papyrus.me.ca:1080/
+
 
 ## Set search API keys
 
@@ -97,6 +98,14 @@ ssh papyrus@127.0.0.1 -p2222
 cd papyrus
 RAILS_ENV=test bundle exec rake db:reset
 RAILS_ENV=test bundle exec rake test
+```
+
+## Provision a vagrant box with RAILS_ENV=production
+
+If you want to bring the box up with RAILS_ENV=production, then specify the environment variable when you run vagrant up:
+
+```
+RAILS_ENV=production vagrant up
 ```
 
 ## Provisioning Papyrus on a remote server/VM
